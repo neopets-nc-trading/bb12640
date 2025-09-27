@@ -570,9 +570,14 @@ function render(){
 function cardHTML(it){
   const lbText = it.leborn ? it.leborn : "—";
   const safeImg = it.image || "";
+    // Mark Crystal Sabre for special styling and badge
+  const isSale = it.name === "Crystal Sabre";
+  const cardClass = "card" + (isSale ? " highlight" : "");
+  
   return `
-  <article class="card" data-name="${escapeHTML(it.name)}" data-leborn="${escapeHTML(lbText)}">
+ <article class="${cardClass}" data-name="${escapeHTML(it.name)}" data-leborn="${escapeHTML(lbText)}">
     <div class="imgwrap">
+      ${isSale ? '<div class="badge">2:1 GBC sale item</div>' : ''}
       <img src="${safeImg}" alt="${escapeHTML(it.name)}" loading="lazy" />
       <div class="qty">×${it.qty||1}</div>
     </div>
