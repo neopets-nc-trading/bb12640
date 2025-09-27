@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>BB12640's NC Inventory - 2025 Sept</title>
+<title>BB12640's NC Inventory - Sept</title>
 <style>
   :root{
     --bg:#0f1115;
@@ -103,6 +103,7 @@
   .name{
     font-size:13px; line-height:1.25; margin:0 0 6px; color:var(--ink);
     min-height:2.5em;
+    display:flex; align-items:center; gap:6px; flex-wrap:wrap;
   }
   .meta{
     display:flex; gap:6px; flex-wrap:wrap; align-items:center;
@@ -129,12 +130,31 @@
     font-size:12px; color:var(--muted);
   }
   .countchip{ background:#0c1017; border:1px solid #22304a; color:var(--ink); padding:4px 8px; border-radius:999px }
+
+  /* Highlight style and badge for special items */
+  .card.highlight {
+    border-color: #ff69b4;
+    box-shadow: 0 0 0 2px rgba(255,105,180,.25) inset;
+    background: linear-gradient(180deg, #1b1520, #221727);
+  }
+  .badge {
+    display:inline-block;
+    background: #ff8ec5;
+    color: #2b0e1e;
+    border: 1px solid #ff69b4;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+    white-space: nowrap;
+  }
 </style>
 </head>
 <body>
 <header>
   <div class="bar">
-    <h1>BB12640's NC Inventory - 2025 Sept</h1>
+    <h1>BB12640's NC Inventory - Sept</h1>
     <div class="search">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="#8aa0c7" aria-hidden="true"><path d="M10 4a6 6 0 1 1 0 12A6 6 0 0 1 10 4m0-2a8 8 0 1 0 4.9 14.3l4.9 4.9 1.4-1.4-4.9-4.9A8 8 0 0 0 10 2z"/></svg>
       <input id="q" type="search" placeholder="Search items..." />
@@ -142,14 +162,14 @@
     <div class="filters">
       <button class="chip active" data-filter="all">All</button>
       <button class="chip" data-filter="le1">LeBorn 1</button>
-      <button class="chip" data-filter="le12">LeBorn 1–2</button>
-      <button class="chip" data-filter="none">LeBorn —</button>
+      <button class="chip" data-filter="le12">LeBorn 1--2</button>
+      <button class="chip" data-filter="none">LeBorn --</button>
     </div>
     <div class="sorter">
       <label for="sort">Sort:</label>
       <select id="sort">
-        <option value="name_az">Name A–Z</option>
-        <option value="name_za">Name Z–A</option>
+        <option value="name_az">Name A--Z</option>
+        <option value="name_za">Name Z--A</option>
         <option value="leborn">LeBorn value</option>
       </select>
     </div>
@@ -157,7 +177,6 @@
 </header>
 
 <main>
-  <!-- Stats removed as requested -->
   <div id="grid" class="grid"></div>
 
   <div class="pagination">
@@ -175,89 +194,89 @@
 </footer>
 
 <script>
-// DATA preserved from your last version (all quantities set to 1)
+// DATA preserved
 const DATA = [
   {name:"Dyeworks Silver: Maraquan Ocean Blue Contacts", qty:1, image:"https://images.neopets.com/items/mall_acc_ocbluemaracnt_sil.gif", leborn:"1-2", type:"Accessory"},
   {name:"Stairway to the Stars", qty:1, image:"https://images.neopets.com/items/mall_bd_stairwaystars.gif", leborn:"4-5", type:"Background"},
   {name:"Fantastical Boba Topping Background", qty:1, image:"https://images.neopets.com/items/00h0f9im3f.gif", leborn:"3", type:"Background"},
-  {name:"Inside a Potion Trinket", qty:1, image:"https://images.neopets.com/items/90g134l3e3.gif", leborn:"—", type:"Trinket"},
+  {name:"Inside a Potion Trinket", qty:1, image:"https://images.neopets.com/items/90g134l3e3.gif", leborn:"--", type:"Trinket"},
   {name:"Babaa Blast Slushie Handheld", qty:1, image:"https://images.neopets.com/items/17h8nkgkm3.gif", leborn:"1", type:"Handheld"},
   {name:"Salted Lime Drink Handheld", qty:1, image:"https://images.neopets.com/items/98dll02m8j.gif", leborn:"1-2", type:"Handheld"},
-  {name:"Yogurt Drink Handheld", qty:1, image:"https://images.neopets.com/items/ffu_illusen_armoire.gif", leborn:"—", type:"Handheld"},
-  {name:"Garden Chandelier", qty:1, image:"https://images.neopets.com/items/mall_trink_gardenchandelier.gif", leborn:"—", type:"Trinket"},
+  {name:"Yogurt Drink Handheld", qty:1, image:"https://images.neopets.com/items/ffu_illusen_armoire.gif", leborn:"--", type:"Handheld"},
+  {name:"Garden Chandelier", qty:1, image:"https://images.neopets.com/items/mall_trink_gardenchandelier.gif", leborn:"--", type:"Trinket"},
   {name:"Sparkling Sunrise Wings", qty:1, image:"https://images.neopets.com/items/mall_wings_pretglitsumm.gif", leborn:"1", type:"Wings"},
-  {name:"Summer Fireworks Background", qty:1, image:"https://images.neopets.com/items/mall_bg_summerfirework.gif", leborn:"—", type:"Background"},
-  {name:"Wispy Bob with Peonies Wig", qty:1, image:"https://images.neopets.com/items/endm5j1335.gif", leborn:"—", type:"Wig"},
-  {name:"Comfy Casual Picnic Outfit", qty:1, image:"https://images.neopets.com/items/097423l081.gif", leborn:"—", type:"Outfit"},
+  {name:"Summer Fireworks Background", qty:1, image:"https://images.neopets.com/items/mall_bg_summerfirework.gif", leborn:"--", type:"Background"},
+  {name:"Wispy Bob with Peonies Wig", qty:1, image:"https://images.neopets.com/items/endm5j1335.gif", leborn:"--", type:"Wig"},
+  {name:"Comfy Casual Picnic Outfit", qty:1, image:"https://images.neopets.com/items/097423l081.gif", leborn:"--", type:"Outfit"},
   {name:"Enchanted Butterfly Wings", qty:1, image:"https://images.neopets.com/items/mall_acc_enchantedwings.gif", leborn:"1-2", type:"Wings"},
-  {name:"Silken Suave Suit Outfit", qty:1, image:"https://images.neopets.com/items/hb3m794emf.gif", leborn:"—", type:"Outfit"},
+  {name:"Silken Suave Suit Outfit", qty:1, image:"https://images.neopets.com/items/hb3m794emf.gif", leborn:"--", type:"Outfit"},
   {name:"Baby Hot Chocolate Handheld", qty:1, image:"https://images.neopets.com/items/3mgg7gj9bk.gif", leborn:"1", type:"Handheld"},
   {name:"Adorable Bubble Buddies Trinket", qty:1, image:"https://images.neopets.com/items/0250geddfa.gif", leborn:"1-2", type:"Trinket"},
   {name:"Kawaii Fireworks Trinket", qty:1, image:"https://images.neopets.com/items/d94wo83thq.gif", leborn:"1-2", type:"Trinket"},
   {name:"Surrounded by Glowing Fungi Trinket", qty:1, image:"https://images.neopets.com/items/c75up49mei.gif", leborn:"1-2", type:"Trinket"},
   {name:"Void Ballroom Suit Top", qty:1, image:"https://images.neopets.com/items/86gmd3hgdj.gif", leborn:"1-2", type:"Top"},
   {name:"Void Pink Shimmer Body Paint", qty:1, image:"https://images.neopets.com/items/79k02l4en0.gif", leborn:"1-2", type:"Body Paint"},
-  {name:"Void Faellie Balloon Handheld", qty:1, image:"https://images.neopets.com/items/889h43ean5.gif", leborn:"—", type:"Handheld"},
-  {name:"Void Gifts Foreground Trinket", qty:1, image:"https://images.neopets.com/items/45g93d3lh0.gif", leborn:"—", type:"Foreground"},
+  {name:"Void Faellie Balloon Handheld", qty:1, image:"https://images.neopets.com/items/889h43ean5.gif", leborn:"--", type:"Handheld"},
+  {name:"Void Gifts Foreground Trinket", qty:1, image:"https://images.neopets.com/items/45g93d3lh0.gif", leborn:"--", type:"Foreground"},
   {name:"Floral Decorated Gold Frame", qty:1, image:"https://images.neopets.com/items/mall_trink_botanicalframe.gif", leborn:"1", type:"Frame"},
   {name:"Stained Glass Frame", qty:1, image:"https://images.neopets.com/items/mall_trink_stainedglassframe.gif", leborn:"1", type:"Frame"},
-  {name:"High-Tech Gaming Glasses", qty:1, image:"https://images.neopets.com/items/btxkrttwi8.gif", leborn:"—", type:"Glasses"},
+  {name:"High-Tech Gaming Glasses", qty:1, image:"https://images.neopets.com/items/btxkrttwi8.gif", leborn:"--", type:"Glasses"},
   {name:"Dyeworks Purple: Holiday Light Contacts", qty:1, image:"https://images.neopets.com/items/mall_acc_holidaycontactlilac.gif", leborn:"1-2", type:"Contacts"},
   {name:"Mysterious Staircase Background", qty:1, image:"https://images.neopets.com/items/mall_bg_mysterystairs.gif", leborn:"1-2", type:"Background"},
-  {name:"Golden Ornate Wings", qty:1, image:"https://images.neopets.com/items/mall_acc_goldenornatewings.gif", leborn:"—", type:"Wings"},
+  {name:"Golden Ornate Wings", qty:1, image:"https://images.neopets.com/items/mall_acc_goldenornatewings.gif", leborn:"--", type:"Wings"},
   {name:"Dyeworks Lavender: Cherub Wings", qty:1, image:"https://images.neopets.com/items/5dc89a9d1c.gif", leborn:"1", type:"Wings"},
-  {name:"Origami Flower Wings", qty:1, image:"https://images.neopets.com/items/mall_wings_origami.gif", leborn:"—", type:"Wings"},
+  {name:"Origami Flower Wings", qty:1, image:"https://images.neopets.com/items/mall_wings_origami.gif", leborn:"--", type:"Wings"},
   {name:"Iridescent Whimsical Wings", qty:1, image:"https://images.neopets.com/items/mall_acc_iridwings.gif", leborn:"1-2", type:"Wings"},
-  {name:"Icicle Wings", qty:1, image:"https://images.neopets.com/items/mall_ss2011_iciclewings.gif", leborn:"—", type:"Wings"},
+  {name:"Icicle Wings", qty:1, image:"https://images.neopets.com/items/mall_ss2011_iciclewings.gif", leborn:"--", type:"Wings"},
   {name:"Dyeworks Grey: Baby Valentine Wings", qty:1, image:"https://images.neopets.com/items/mall_wings_babyvalgrey.gif", leborn:"1-2", type:"Wings"},
   {name:"Dyeworks Burgundy: Gangrene Mutant Wings", qty:1, image:"https://images.neopets.com/items/mall_acc_gangrenewing_burg.gif", leborn:"1-2", type:"Wings"},
-  {name:"Surrounded by Wind Trinket", qty:1, image:"https://images.neopets.com/items/akbwkxlfeu.gif", leborn:"—", type:"Trinket"},
+  {name:"Surrounded by Wind Trinket", qty:1, image:"https://images.neopets.com/items/akbwkxlfeu.gif", leborn:"--", type:"Trinket"},
   {name:"Premium Collectible: Space Desert Background", qty:1, image:"https://images.neopets.com/items/f7im7hnce2.gif", leborn:"1", type:"Background"},
   {name:"Pastel Ponytails Wig", qty:1, image:"https://images.neopets.com/items/1488ha0gnm.gif", leborn:"1-2", type:"Wig"},
   {name:"Floral Gardening Garland", qty:1, image:"https://images.neopets.com/items/mall_garl_floralgardening.gif", leborn:"1-2", type:"Garland"},
-  {name:"Chestnuts Roasting on An Open Fire Foreground", qty:1, image:"https://images.neopets.com/items/mall_fg_chesnutsroasting.gif", leborn:"—", type:"Foreground"},
-  {name:"Birthday Party Piñata", qty:1, image:"https://images.neopets.com/items/mall_trink_partypinata.gif", leborn:"—", type:"Trinket"},
+  {name:"Chestnuts Roasting on An Open Fire Foreground", qty:1, image:"https://images.neopets.com/items/mall_fg_chesnutsroasting.gif", leborn:"--", type:"Foreground"},
+  {name:"Birthday Party Piñata", qty:1, image:"https://images.neopets.com/items/mall_trink_partypinata.gif", leborn:"--", type:"Trinket"},
   {name:"Stylish Pumpkin Stacks", qty:1, image:"https://images.neopets.com/items/mall_trink_pumpkinstacks.gif", leborn:"1", type:"Trinket"},
   {name:"Hanging Decorative Lights", qty:1, image:"https://images.neopets.com/items/mall_trink_hangingbulblights.gif", leborn:"1", type:"Lights"},
-  {name:"Mistletoe Garland", qty:1, image:"https://images.neopets.com/items/mall_gar_mistletoe.gif", leborn:"—", type:"Garland"},
+  {name:"Mistletoe Garland", qty:1, image:"https://images.neopets.com/items/mall_gar_mistletoe.gif", leborn:"--", type:"Garland"},
   {name:"Spring Spyder Web Garland", qty:1, image:"https://images.neopets.com/items/mall_gar_springspyder.gif", leborn:"1-2", type:"Garland"},
-  {name:"Happy Holidays Sleeping Cap", qty:1, image:"https://images.neopets.com/items/mall_acc_sleepingelfcap.gif", leborn:"—", type:"Hat"},
-  {name:"Black Umbrella Kougra Handheld", qty:1, image:"https://images.neopets.com/items/dia7ali4jn.gif", leborn:"—", type:"Handheld"},
-  {name:"Kougra Bus Body Wearable", qty:1, image:"https://images.neopets.com/items/1c44gkf2bn.gif", leborn:"—", type:"Body Wearable"},
+  {name:"Happy Holidays Sleeping Cap", qty:1, image:"https://images.neopets.com/items/mall_acc_sleepingelfcap.gif", leborn:"--", type:"Hat"},
+  {name:"Black Umbrella Kougra Handheld", qty:1, image:"https://images.neopets.com/items/dia7ali4jn.gif", leborn:"--", type:"Handheld"},
+  {name:"Kougra Bus Body Wearable", qty:1, image:"https://images.neopets.com/items/1c44gkf2bn.gif", leborn:"--", type:"Body Wearable"},
   {name:"Strawberries and Cream Body Paint Wearable", qty:1, image:"https://images.neopets.com/items/7f44mj1djd.gif", leborn:"1-2", type:"Body Paint"},
-  {name:"Makeup Palette and Brush Handheld", qty:1, image:"https://images.neopets.com/items/e08504d7l9.gif", leborn:"—", type:"Handheld"},
+  {name:"Makeup Palette and Brush Handheld", qty:1, image:"https://images.neopets.com/items/e08504d7l9.gif", leborn:"--", type:"Handheld"},
   {name:"Twirling Feepit in a Tutu", qty:1, image:"https://images.neopets.com/items/mall_fg_twirlingfeepit.gif", leborn:"1-2", type:"Foreground"},
   {name:"Snowy Faerie Glade Background", qty:1, image:"https://images.neopets.com/items/mall_bg_snowyglade.gif", leborn:"1-2", type:"Background"},
   {name:"Dream Potion Bottle", qty:1, image:"https://images.neopets.com/items/mall_hh_lovepotion.gif", leborn:"1-2", type:"Handheld"},
-  {name:"Spiked Crown and Wig", qty:1, image:"https://images.neopets.com/items/mall_wig_eeriecrown.gif", leborn:"—", type:"Wig"},
+  {name:"Spiked Crown and Wig", qty:1, image:"https://images.neopets.com/items/mall_wig_eeriecrown.gif", leborn:"--", type:"Wig"},
   {name:"Sea Breeze Jacuzzi", qty:1, image:"https://images.neopets.com/items/mall_fg_seajacuzzi.gif", leborn:"1", type:"Foreground"},
   {name:"Skeletal Wings", qty:1, image:"https://images.neopets.com/items/mall_wings_skeletal.gif", leborn:"1-2", type:"Wings"},
   {name:"Serene Desert Background", qty:1, image:"https://images.neopets.com/items/mall_bg_colourfuldesert.gif", leborn:"3", type:"Background"},
   {name:"Radiating Rainbow Rays", qty:1, image:"https://images.neopets.com/items/9ougnuns19.gif", leborn:"3-4", type:"Foreground"},
   {name:"Super Attack Pea Trinket", qty:1, image:"https://images.neopets.com/items/37michg65b.gif", leborn:"2-4", type:"Trinket"},
-  {name:"New Years at the Neolodge Background", qty:1, image:"https://images.neopets.com/items/mall_bg_neolodgenye.gif", leborn:"—", type:"Background"},
+  {name:"New Years at the Neolodge Background", qty:1, image:"https://images.neopets.com/items/mall_bg_neolodgenye.gif", leborn:"--", type:"Background"},
   {name:"Lakeside Camping Background", qty:1, image:"https://images.neopets.com/items/mall_bg_lakesidecamper.gif", leborn:"1-2", type:"Background"},
-  {name:"New Years in Kreludor", qty:1, image:"https://images.neopets.com/items/mall_bg_ny_kre.gif", leborn:"—", type:"Background"},
+  {name:"New Years in Kreludor", qty:1, image:"https://images.neopets.com/items/mall_bg_ny_kre.gif", leborn:"--", type:"Background"},
   {name:"Noxious Gas Planet Background", qty:1, image:"https://images.neopets.com/items/mall_bg_8bitgas.gif", leborn:"1-2", type:"Background"},
-  {name:"#1 Fan Room Background", qty:1, image:"https://images.neopets.com/items/mall_bg_numberonefanbg.gif", leborn:"—", type:"Background"},
+  {name:"#1 Fan Room Background", qty:1, image:"https://images.neopets.com/items/mall_bg_numberonefanbg.gif", leborn:"--", type:"Background"},
   {name:"Tulle Cloud Skirt", qty:1, image:"https://images.neopets.com/items/mall_clo_tulleskirt.gif", leborn:"Permanent Buyable", type:"Skirt"},
   {name:"Muted Library Background", qty:1, image:"https://images.neopets.com/items/mall_bg_library.gif", leborn:"Permanent Buyable", type:"Background"},
   {name:"Bubbling Beaker", qty:1, image:"https://images.neopets.com/items/mall_beaker_bubbling.gif", leborn:"1-2", type:"Handheld"},
-  {name:"Ornament Foreground", qty:1, image:"https://images.neopets.com/items/mall_fg_ornaments.gif", leborn:"—", type:"Foreground"},
+  {name:"Ornament Foreground", qty:1, image:"https://images.neopets.com/items/mall_fg_ornaments.gif", leborn:"--", type:"Foreground"},
   {name:"Nightmare Bristle Cape", qty:1, image:"https://images.neopets.com/items/mall_cape_darkshimmer.gif", leborn:"1-2", type:"Cape"},
   {name:"Summer Fun Beach Background", qty:1, image:"https://images.neopets.com/items/bg_summerfunbeach.gif", leborn:"2", type:"Background"},
   {name:"Carved Bronze Paisley Candle Garland", qty:1, image:"https://images.neopets.com/items/mall_garland_paisleycandle.gif", leborn:"1", type:"Garland"},
   {name:"Radiating Hearts of Love", qty:1, image:"https://images.neopets.com/items/mall_bgi_blackheart.gif", leborn:"1-2", type:"Foreground"},
-  {name:"Striped Lollypop Sword", qty:1, image:"https://images.neopets.com/items/mall_hh_lollypopsword.gif", leborn:"—", type:"Handheld"},
+  {name:"Striped Lollypop Sword", qty:1, image:"https://images.neopets.com/items/mall_hh_lollypopsword.gif", leborn:"--", type:"Handheld"},
   {name:"Summer Petals Pathway", qty:1, image:"https://images.neopets.com/items/mall_pathway_summerflowers.gif", leborn:"1", type:"Foreground"},
   {name:"Mutant Wasteland Background", qty:1, image:"https://images.neopets.com/items/mall_bg_mutantwasteland.gif", leborn:"1", type:"Background"},
   {name:"Discovery of Darigan Day Background", qty:1, image:"https://images.neopets.com/items/mall_bg_darigan.gif", leborn:"1", type:"Background"},
   {name:"Pumpkin Spiced Latte", qty:1, image:"https://images.neopets.com/items/mall_acc_pumspicelatte.gif", leborn:"1-2", type:"Handheld"},
-  {name:"Holiday Anniversary Toy Train Foreground", qty:1, image:"https://images.neopets.com/items/57dgkei4fk.gif", leborn:"—", type:"Foreground"},
+  {name:"Holiday Anniversary Toy Train Foreground", qty:1, image:"https://images.neopets.com/items/57dgkei4fk.gif", leborn:"--", type:"Foreground"},
   {name:"New Years in Mystery Island Background", qty:1, image:"https://images.neopets.com/items/mall_bg_mysteryisny.gif", leborn:"1", type:"Background"},
   {name:"Festive Neggnog Stand", qty:1, image:"https://images.neopets.com/items/mall_trink_neggnogstand.gif", leborn:"1-2", type:"Trinket"},
   {name:"Precious Pumpkin Purse", qty:1, image:"https://images.neopets.com/items/mall_acc_pumpkinpurse.gif", leborn:"1-2", type:"Handbag"},
-  {name:"Lucky Green House Background", qty:1, image:"https://images.neopets.com/items/mall_bg_greenhouse.gif", leborn:"—", type:"Background"},
+  {name:"Lucky Green House Background", qty:1, image:"https://images.neopets.com/items/mall_bg_greenhouse.gif", leborn:"--", type:"Background"},
   {name:"Spring Weewoo Garland", qty:1, image:"https://images.neopets.com/items/mall_garland_eastpetpet.gif", leborn:"1", type:"Garland"},
   {name:"On the Flying Ship Background", qty:1, image:"https://images.neopets.com/items/mall_bg_flyingship.gif", leborn:"1", type:"Background"},
   {name:"Leafy Green Cape", qty:1, image:"https://images.neopets.com/items/mall_clo_greenleaf_cape.gif", leborn:"1-2", type:"Cape"},
@@ -265,27 +284,27 @@ const DATA = [
   {name:"Cozy Altador Cup Home Theater Background", qty:1, image:"https://images.neopets.com/items/mall_bg_achometheater.gif", leborn:"2-3", type:"Background"},
   {name:"VIP Raffle Patio Party Background", qty:1, image:"https://images.neopets.com/items/mall_bg_vippatioparty.gif", leborn:"1-2", type:"Background"},
   {name:"Abandoned Romantic Setting Background", qty:1, image:"https://images.neopets.com/items/mall_bg_sadromantic.gif", leborn:"1-2", type:"Background"},
-  {name:"Birthday Tassel Garland", qty:1, image:"https://images.neopets.com/items/mall_trink_bdaytassel.gif", leborn:"—", type:"Garland"},
+  {name:"Birthday Tassel Garland", qty:1, image:"https://images.neopets.com/items/mall_trink_bdaytassel.gif", leborn:"--", type:"Garland"},
   {name:"Plushie Palace Foreground", qty:1, image:"https://images.neopets.com/items/6k67b670kn.gif", leborn:"1", type:"Foreground"},
   {name:"New Years at Jhudoras Bluff Background", qty:1, image:"https://images.neopets.com/items/mall_bg_nyejhudora.gif", leborn:"4-5", type:"Background"},
-  {name:"Elaborate Party Hat & Glasses", qty:1, image:"https://images.neopets.com/items/mall_acc_elaboratehatglasses.gif", leborn:"—", type:"Accessory"},
+  {name:"Elaborate Party Hat & Glasses", qty:1, image:"https://images.neopets.com/items/mall_acc_elaboratehatglasses.gif", leborn:"--", type:"Accessory"},
   {name:"Giant Petpetpet Safari Background", qty:1, image:"https://images.neopets.com/items/mall_bg_mutantppp.gif", leborn:"1", type:"Background"},
-  {name:"Enchanting Wind Chime", qty:1, image:"https://images.neopets.com/items/mall_trink_enchantwind.gif", leborn:"—", type:"Trinket"},
-  {name:"Glass Bottom Boat Kiko Lake Background", qty:1, image:"https://images.neopets.com/items/mall_bg_glassboatkikolake.gif", leborn:"—", type:"Background"},
+  {name:"Enchanting Wind Chime", qty:1, image:"https://images.neopets.com/items/mall_trink_enchantwind.gif", leborn:"--", type:"Trinket"},
+  {name:"Glass Bottom Boat Kiko Lake Background", qty:1, image:"https://images.neopets.com/items/mall_bg_glassboatkikolake.gif", leborn:"--", type:"Background"},
   {name:"Rainbow Forest Background", qty:1, image:"https://images.neopets.com/items/mall_bg_rainbowforest.gif", leborn:"3-5", type:"Background"},
-  {name:"Festive Birthday Wig", qty:1, image:"https://images.neopets.com/items/mall_acc_bdaywig.gif", leborn:"—", type:"Wig"},
-  {name:"Crossing into New Years on Lutari Island", qty:1, image:"https://images.neopets.com/items/mall_bg_nylutari1.gif", leborn:"—", type:"Background"},
-  {name:"New Years at the Rubbish Dump Background", qty:1, image:"https://images.neopets.com/items/91fi4lngha.gif", leborn:"—", type:"Background"},
+  {name:"Festive Birthday Wig", qty:1, image:"https://images.neopets.com/items/mall_acc_bdaywig.gif", leborn:"--", type:"Wig"},
+  {name:"Crossing into New Years on Lutari Island", qty:1, image:"https://images.neopets.com/items/mall_bg_nylutari1.gif", leborn:"--", type:"Background"},
+  {name:"New Years at the Rubbish Dump Background", qty:1, image:"https://images.neopets.com/items/91fi4lngha.gif", leborn:"--", type:"Background"},
   {name:"Paintbrush Collector Background", qty:1, image:"https://images.neopets.com/items/mall_bg_paintbrushcollector.gif", leborn:"1-2", type:"Background"},
-  {name:"New Years at the Money Tree Background", qty:1, image:"https://images.neopets.com/items/mall_bg_newyears_moneytree.gif", leborn:"—", type:"Background"},
-  {name:"Ruined Faerie Festival Background", qty:1, image:"https://images.neopets.com/items/mall_trink_faeriestatues.gif", leborn:"—", type:"Foreground"},
+  {name:"New Years at the Money Tree Background", qty:1, image:"https://images.neopets.com/items/mall_bg_newyears_moneytree.gif", leborn:"--", type:"Background"},
+  {name:"Ruined Faerie Festival Background", qty:1, image:"https://images.neopets.com/items/mall_trink_faeriestatues.gif", leborn:"--", type:"Foreground"},
   {name:"Flaming Hoop and Jumping Noils", qty:1, image:"https://images.neopets.com/items/mall_fg_jumpingnoils.gif", leborn:"3", type:"Foreground"},
   {name:"New Years on the Beach Background", qty:1, image:"https://images.neopets.com/items/mall_bg_nybeach.gif", leborn:"1-2", type:"Background"},
   {name:"New Years on the Hidden Tower", qty:1, image:"https://images.neopets.com/items/mall_bg_nyhiddentower.gif", leborn:"1-2", type:"Background"},
   {name:"Colourful Blossom Gown", qty:1, image:"https://images.neopets.com/items/mall_dress_flower.gif", leborn:"Permanent Buyable", type:"Dress"},
   {name:"Calm before the Storm on Lutari Island", qty:1, image:"https://images.neopets.com/items/mall_bg_nylutari2.gif", leborn:"1", type:"Background"},
   {name:"Plushie Palace Background", qty:1, image:"https://images.neopets.com/items/fi78l855le.gif", leborn:"3", type:"Background"},
-  {name:"Leprechaun Tree Housing", qty:1, image:"https://images.neopets.com/items/mall_trink_leprechanhouses.gif", leborn:"—", type:"Trinket"},
+  {name:"Leprechaun Tree Housing", qty:1, image:"https://images.neopets.com/items/mall_trink_leprechanhouses.gif", leborn:"--", type:"Trinket"},
   {name:"Rustic Garden Gate", qty:1, image:"https://images.neopets.com/items/mall_trink_rusticgarden.gif", leborn:"1", type:"Trinket"},
   {name:"Void Birthday High Ponytail Wig", qty:1, image:"https://images.neopets.com/items/4l1901b527.gif", leborn:"1", type:"Wig"},
   {name:"Jhudoras Cauldron", qty:1, image:"https://images.neopets.com/items/mall_trink_jhudoracauldron.gif", leborn:"2", type:"Trinket"},
@@ -296,10 +315,10 @@ const DATA = [
   {name:"Red Vampire Contacts", qty:1, image:"https://images.neopets.com/items/mall_acc_redblackeyes.gif", leborn:"1-2", type:"Contacts"},
   {name:"Discovery of Krawk Island Day Background", qty:1, image:"https://images.neopets.com/items/mall_bg_ki.gif", leborn:"1", type:"Background"},
   {name:"Springtime Shop Background", qty:1, image:"https://images.neopets.com/items/mall_bg_springshop.gif", leborn:"1", type:"Background"},
-  {name:"Green Leafy Wings", qty:1, image:"https://images.neopets.com/items/mall_leafywings.gif", leborn:"—", type:"Wings"},
-  {name:"New Years in Neopia Central Background", qty:1, image:"https://images.neopets.com/items/mall_bg_newyearsneopiacentral.gif", leborn:"—", type:"Background"},
+  {name:"Green Leafy Wings", qty:1, image:"https://images.neopets.com/items/mall_leafywings.gif", leborn:"--", type:"Wings"},
+  {name:"New Years in Neopia Central Background", qty:1, image:"https://images.neopets.com/items/mall_bg_newyearsneopiacentral.gif", leborn:"--", type:"Background"},
   {name:"Crystal Sabre", qty:1, image:"https://images.neopets.com/items/mall_acc_gemsabre.gif", leborn:"1-2", type:"Handheld"},
-  {name:"Pink Drapery Background", qty:1, image:"https://images.neopets.com/items/mall_bg_pinkdrapery.gif", leborn:"—", type:"Background"},
+  {name:"Pink Drapery Background", qty:1, image:"https://images.neopets.com/items/mall_bg_pinkdrapery.gif", leborn:"--", type:"Background"},
   {name:"Grey Faerieland Bookshop Background", qty:1, image:"https://images.neopets.com/items/mall_bg_greyfaerielandbookshop.gif", leborn:"2", type:"Background"},
   {name:"New Years at Roo Island Merry Go Round", qty:1, image:"https://images.neopets.com/items/mall_bg_roomerrygoroundnye.gif", leborn:"1-2", type:"Background"},
   {name:"Bunch of Bikas Foreground", qty:1, image:"https://images.neopets.com/items/mall_fg_bikapetpet.gif", leborn:"2-3", type:"Foreground"},
@@ -307,73 +326,73 @@ const DATA = [
   {name:"Commemorative In the Spotlight Garland", qty:1, image:"https://images.neopets.com/items/mall_trink_communityspotlight.gif", leborn:"1", type:"Garland"},
   {name:"Delicate Earth Faerie Wings", qty:1, image:"https://images.neopets.com/items/mall_wing_forestfairy_wing.gif", leborn:"Permanent Buyable", type:"Wings"},
   {name:"Dyeworks Yellow: Colourful Stars Trinket", qty:1, image:"https://images.neopets.com/items/effba9305e.gif", leborn:"1", type:"Trinket"},
-  {name:"Boat Day Background", qty:1, image:"https://images.neopets.com/items/mall_bg_boatday.gif", leborn:"—", type:"Background"},
+  {name:"Boat Day Background", qty:1, image:"https://images.neopets.com/items/mall_bg_boatday.gif", leborn:"--", type:"Background"},
   {name:"VIP Banquet Background", qty:1, image:"https://images.neopets.com/items/mall_bg_vipbanquet.gif", leborn:"1-2", type:"Background"},
-  {name:"New Years in Roo Island Background", qty:1, image:"https://images.neopets.com/items/mall_bg_newyearsrooisland.gif", leborn:"—", type:"Background"},
+  {name:"New Years in Roo Island Background", qty:1, image:"https://images.neopets.com/items/mall_bg_newyearsrooisland.gif", leborn:"--", type:"Background"},
   {name:"Dark Glowing Lily Tree", qty:1, image:"https://images.neopets.com/items/mall_trink_glowing_lilies_side.gif", leborn:"1-2", type:"Trinket"},
   {name:"Bakery Display Case", qty:1, image:"https://images.neopets.com/items/mall_foreground_bakery.gif", leborn:"4-5", type:"Foreground"},
   {name:"Purple Niptor Contacts", qty:1, image:"https://images.neopets.com/items/mall_acc_purpniptoreyes.gif", leborn:"1-2", type:"Contacts"},
   {name:"Dazzling Rainbow Tent", qty:1, image:"https://images.neopets.com/items/mall_trink_rainbowtent.gif", leborn:"1-2", type:"Trinket"},
   {name:"Dyeworks Black: Firefly Aura Filter", qty:1, image:"https://images.neopets.com/items/af8946e729.gif", leborn:"1", type:"Foreground"},
   {name:"Dyeworks Pink: Firefly Aura Filter", qty:1, image:"https://images.neopets.com/items/56f1cd940f.gif", leborn:"1-2", type:"Foreground"},
-  {name:"Giant Noil Petpet Wearable", qty:1, image:"https://images.neopets.com/items/6b6fm4d03n.gif", leborn:"—", type:"Trinket"},
+  {name:"Giant Noil Petpet Wearable", qty:1, image:"https://images.neopets.com/items/6b6fm4d03n.gif", leborn:"--", type:"Trinket"},
   {name:"Dyeworks Teal: Dusk in the Water Background", qty:1, image:"https://images.neopets.com/items/a1883dac04.gif", leborn:"1", type:"Background"},
   {name:"Dyeworks Pink: Enchanted Butterfly Jars Foreground", qty:1, image:"https://images.neopets.com/items/6d219ec133.gif", leborn:"1", type:"Foreground"},
   {name:"Flowery Apothecary Table", qty:1, image:"https://images.neopets.com/items/fdd202048f.gif", leborn:"1-2", type:"Trinket"},
-  {name:"Entangling Ixi Wisteria Shoes", qty:1, image:"https://images.neopets.com/items/6afee8ae65.gif", leborn:"—", type:"Shoes"},
+  {name:"Entangling Ixi Wisteria Shoes", qty:1, image:"https://images.neopets.com/items/6afee8ae65.gif", leborn:"--", type:"Shoes"},
   {name:"Dyeworks Blue: Dreamy Cloud Background", qty:1, image:"https://images.neopets.com/items/eb82ad05f6.gif", leborn:"1-2", type:"Background"},
-  {name:"Dyeworks Pastel Pink: Magical Valentine Eyes", qty:1, image:"https://images.neopets.com/items/6234bc3fd5.gif", leborn:"—", type:"Contacts"},
+  {name:"Dyeworks Pastel Pink: Magical Valentine Eyes", qty:1, image:"https://images.neopets.com/items/6234bc3fd5.gif", leborn:"--", type:"Contacts"},
   {name:"Dyeworks Orange: Splashing Flotsam Beach Background", qty:1, image:"https://images.neopets.com/items/0b4fa2f372.gif", leborn:"1", type:"Background"},
   {name:"Dyeworks Blue: Splashing Flotsam Beach Background", qty:1, image:"https://images.neopets.com/items/14ac1812f0.gif", leborn:"1", type:"Background"},
   {name:"Enchanted Woods Background", qty:1, image:"https://images.neopets.com/items/mall_bg_enchantwoodland.gif", leborn:"Permanent Buyable", type:"Background"},
   {name:"Dark Minion Staff", qty:1, image:"https://images.neopets.com/items/mall_hh_crokabek.gif", leborn:"1-2", type:"Handheld"},
   {name:"New Years in Kiko Lake", qty:1, image:"https://images.neopets.com/items/mall_bg_ny_kiko.gif", leborn:"1-2", type:"Background"},
-  {name:"Sparkling Orange Goldy Petpet Tail", qty:1, image:"https://images.neopets.com/items/713c4cfa5e.gif", leborn:"—", type:"Trinket"},
+  {name:"Sparkling Orange Goldy Petpet Tail", qty:1, image:"https://images.neopets.com/items/713c4cfa5e.gif", leborn:"--", type:"Trinket"},
   {name:"Dyeworks Purple: Dreamy Cloud Background", qty:1, image:"https://images.neopets.com/items/29a07d69e9.gif", leborn:"1", type:"Background"},
   {name:"Bottled Faerie Background", qty:1, image:"https://images.neopets.com/items/mall_bg_bottledfaerie.gif", leborn:"Permanent Buyable", type:"Background"},
-  {name:"Dyeworks Orange: Dreamy Cloud Background", qty:1, image:"https://images.neopets.com/items/e223969650.gif", leborn:"—", type:"Background"},
+  {name:"Dyeworks Orange: Dreamy Cloud Background", qty:1, image:"https://images.neopets.com/items/e223969650.gif", leborn:"--", type:"Background"},
   {name:"Floating Jhudora Faerie Doll", qty:1, image:"https://images.neopets.com/items/mall_floatingjhudoradoll.gif", leborn:"Permanent Buyable", type:"Trinket"},
-  {name:"Dyeworks Orange: Raining Stars Effect", qty:1, image:"https://images.neopets.com/items/dlh2ijd31a.gif", leborn:"—", type:"Foreground"},
-  {name:"Dyeworks Green: Fancy Sparkles Shower", qty:1, image:"https://images.neopets.com/items/60a93akhi5.gif", leborn:"—", type:"Foreground"},
+  {name:"Dyeworks Orange: Raining Stars Effect", qty:1, image:"https://images.neopets.com/items/dlh2ijd31a.gif", leborn:"--", type:"Foreground"},
+  {name:"Dyeworks Green: Fancy Sparkles Shower", qty:1, image:"https://images.neopets.com/items/60a93akhi5.gif", leborn:"--", type:"Foreground"},
   {name:"Delina the Crafting Faerie Floating Doll", qty:1, image:"https://images.neopets.com/items/mall_faeriedoll_delina.gif", leborn:"Permanent Buyable", type:"Trinket"},
   {name:"Dyeworks Red: Magical Valentine Eyes", qty:1, image:"https://images.neopets.com/items/2f2a69d4aa.gif", leborn:"1-2", type:"Contacts"},
   {name:"Dyeworks Purple: Splashing Flotsam Beach Background", qty:1, image:"https://images.neopets.com/items/b8d39bbfbc.gif", leborn:"1-2", type:"Background"},
   {name:"Magical Golden Markings", qty:1, image:"https://images.neopets.com/items/mall_acc_gold_body_dust.gif", leborn:"Permanent Buyable", type:"Body Paint"},
-  {name:"Dyeworks Red: Breezy Cherry Blossom Filter", qty:1, image:"https://images.neopets.com/items/8gghd3f2ii.gif", leborn:"—", type:"Foreground"},
+  {name:"Dyeworks Red: Breezy Cherry Blossom Filter", qty:1, image:"https://images.neopets.com/items/8gghd3f2ii.gif", leborn:"--", type:"Foreground"},
   {name:"Dyeworks Blue: Raining Stars Effect", qty:1, image:"https://images.neopets.com/items/6dfiid2h5n.gif", leborn:"1-2", type:"Foreground"},
   {name:"Dark Disco Party Background", qty:1, image:"https://images.neopets.com/items/mall_bg_darkdance.gif", leborn:"2-3", type:"Background"},
-  {name:"Pink and Blue Fringed Scarf", qty:1, image:"https://images.neopets.com/items/mall_acc_pinkbluefringe.gif", leborn:"—", type:"Scarf"},
-  {name:"Throne of Gems", qty:1, image:"https://images.neopets.com/items/mall_trink_throneofgems.gif", leborn:"—", type:"Trinket"},
-  {name:"Yacht Life Background", qty:1, image:"https://images.neopets.com/items/mall_bg_yachtboat.gif", leborn:"—", type:"Background"},
-  {name:"Patterned Autumn Parka", qty:1, image:"https://images.neopets.com/items/mall_clo_fallsweater.gif", leborn:"—", type:"Jacket"},
-  {name:"Flotsam Entangled Fishing Rope Accessory", qty:1, image:"https://images.neopets.com/items/9fa6e03891.gif", leborn:"—", type:"Accessory"},
-  {name:"Flotsam Scared Pfish Handheld", qty:1, image:"https://images.neopets.com/items/99a56e579f.gif", leborn:"—", type:"Handheld"},
-  {name:"Tropical Vacation Outfit", qty:1, image:"https://images.neopets.com/items/mall_clo_vacayfit.gif", leborn:"—", type:"Outfit"},
+  {name:"Pink and Blue Fringed Scarf", qty:1, image:"https://images.neopets.com/items/mall_acc_pinkbluefringe.gif", leborn:"--", type:"Scarf"},
+  {name:"Throne of Gems", qty:1, image:"https://images.neopets.com/items/mall_trink_throneofgems.gif", leborn:"--", type:"Trinket"},
+  {name:"Yacht Life Background", qty:1, image:"https://images.neopets.com/items/mall_bg_yachtboat.gif", leborn:"--", type:"Background"},
+  {name:"Patterned Autumn Parka", qty:1, image:"https://images.neopets.com/items/mall_clo_fallsweater.gif", leborn:"--", type:"Jacket"},
+  {name:"Flotsam Entangled Fishing Rope Accessory", qty:1, image:"https://images.neopets.com/items/9fa6e03891.gif", leborn:"--", type:"Accessory"},
+  {name:"Flotsam Scared Pfish Handheld", qty:1, image:"https://images.neopets.com/items/99a56e579f.gif", leborn:"--", type:"Handheld"},
+  {name:"Tropical Vacation Outfit", qty:1, image:"https://images.neopets.com/items/mall_clo_vacayfit.gif", leborn:"--", type:"Outfit"},
   {name:"Fruitful Spring Garland", qty:1, image:"https://images.neopets.com/items/mall_garl_springfruit.gif", leborn:"1-2", type:"Garland"},
   {name:"Dark Prism Forest Background", qty:1, image:"https://images.neopets.com/items/mall_bg_darkrainbow.gif", leborn:"1", type:"Background"},
   {name:"Tough Guy Jacket", qty:1, image:"https://images.neopets.com/items/mall_clo_jackethoodie.gif", leborn:"1-2", type:"Jacket"},
-  {name:"Tropical Flower Facepaint", qty:1, image:"https://images.neopets.com/items/mall_acc_tropicalfp.gif", leborn:"—", type:"Body Paint"},
+  {name:"Tropical Flower Facepaint", qty:1, image:"https://images.neopets.com/items/mall_acc_tropicalfp.gif", leborn:"--", type:"Body Paint"},
   {name:"Goth Striped Swim Trunks", qty:1, image:"https://images.neopets.com/items/b88egklkdb.gif", leborn:"1-2", type:"Swimwear"},
-  {name:"Shimmery Seashell Dress", qty:1, image:"https://images.neopets.com/items/mall_clo_seashelldress.gif", leborn:"—", type:"Dress"},
-  {name:"Lush Leaves Swim Suit", qty:1, image:"https://images.neopets.com/items/mall_swimsuit_tropical.gif", leborn:"—", type:"Swimwear"},
-  {name:"Plaid Summer Dress", qty:1, image:"https://images.neopets.com/items/mall_dress_picnic.gif", leborn:"—", type:"Dress"},
-  {name:"Baby Valentine Rock Chocolates", qty:1, image:"https://images.neopets.com/items/6982ah7fmb.gif", leborn:"—", type:"Handheld"},
+  {name:"Shimmery Seashell Dress", qty:1, image:"https://images.neopets.com/items/mall_clo_seashelldress.gif", leborn:"--", type:"Dress"},
+  {name:"Lush Leaves Swim Suit", qty:1, image:"https://images.neopets.com/items/mall_swimsuit_tropical.gif", leborn:"--", type:"Swimwear"},
+  {name:"Plaid Summer Dress", qty:1, image:"https://images.neopets.com/items/mall_dress_picnic.gif", leborn:"--", type:"Dress"},
+  {name:"Baby Valentine Rock Chocolates", qty:1, image:"https://images.neopets.com/items/6982ah7fmb.gif", leborn:"--", type:"Handheld"},
   {name:"Pink Sprinkle Doughnut Handheld", qty:1, image:"https://images.neopets.com/items/g79inchj13.gif", leborn:"3", type:"Handheld"},
-  {name:"Summer Picnic Background", qty:1, image:"https://images.neopets.com/items/mall_bg_summerpicnic.gif", leborn:"—", type:"Background"},
+  {name:"Summer Picnic Background", qty:1, image:"https://images.neopets.com/items/mall_bg_summerpicnic.gif", leborn:"--", type:"Background"},
   {name:"Winter Solstice Orange Garland", qty:1, image:"https://images.neopets.com/items/mall_fg_orangegarland.gif", leborn:"1-2", type:"Garland"},
   {name:"Chocolate Bonbon Dress", qty:1, image:"https://images.neopets.com/items/mall_clo_chocolatebonbon.gif", leborn:"1-2", type:"Dress"},
-  {name:"Dessert Party Background", qty:1, image:"https://images.neopets.com/items/mall_bg_dessertbg.gif", leborn:"—", type:"Background"},
-  {name:"Blumaroo Steak Handheld", qty:1, image:"https://images.neopets.com/items/0ld4hkjhd6.gif", leborn:"—", type:"Handheld"},
-  {name:"Enjoying A Snack Trinket", qty:1, image:"https://images.neopets.com/items/ckmbed8i09.gif", leborn:"—", type:"Trinket"},
-  {name:"Pumpkin Hanging Lantern", qty:1, image:"https://images.neopets.com/items/mall_jjpb_paperpumpkinlanterns.gif", leborn:"—", type:"Trinket"},
+  {name:"Dessert Party Background", qty:1, image:"https://images.neopets.com/items/mall_bg_dessertbg.gif", leborn:"--", type:"Background"},
+  {name:"Blumaroo Steak Handheld", qty:1, image:"https://images.neopets.com/items/0ld4hkjhd6.gif", leborn:"--", type:"Handheld"},
+  {name:"Enjoying A Snack Trinket", qty:1, image:"https://images.neopets.com/items/ckmbed8i09.gif", leborn:"--", type:"Trinket"},
+  {name:"Pumpkin Hanging Lantern", qty:1, image:"https://images.neopets.com/items/mall_jjpb_paperpumpkinlanterns.gif", leborn:"--", type:"Trinket"},
   {name:"Pastel Christmas Cookie Party Background", qty:1, image:"https://images.neopets.com/items/mall_bck_santa_cookie_party.gif", leborn:"2-3", type:"Background"},
   {name:"Peppermint Candy Body Paint", qty:1, image:"https://images.neopets.com/items/fl63gla8am.gif", leborn:"2", type:"Body Paint"},
   {name:"Smores Wand", qty:1, image:"https://images.neopets.com/items/mall_hh_smorewand.gif", leborn:"1", type:"Handheld"},
-  {name:"Waffle Cone Skirt", qty:1, image:"https://images.neopets.com/items/mall_skirt_icecreamcone.gif", leborn:"—", type:"Skirt"},
+  {name:"Waffle Cone Skirt", qty:1, image:"https://images.neopets.com/items/mall_skirt_icecreamcone.gif", leborn:"--", type:"Skirt"},
   {name:"Dyeworks Blue: Sugar Icing Holiday Cookies Garland", qty:1, image:"https://images.neopets.com/items/mall_sugarholidaycookies_blue.gif", leborn:"1-2", type:"Garland"},
-  {name:"Bittersweet Chocolatier Dress", qty:1, image:"https://images.neopets.com/items/mall_clo_chocolatierdress.gif", leborn:"—", type:"Dress"},
-  {name:"Living in Watermelon Foreground and Background", qty:1, image:"https://images.neopets.com/items/mall_trink_watermfgbg.gif", leborn:"—", type:"Foreground"},
-  {name:"Cake Pop Bouquet", qty:1, image:"https://images.neopets.com/items/mall_hh_cakepop.gif", leborn:"—", type:"Handheld"},
+  {name:"Bittersweet Chocolatier Dress", qty:1, image:"https://images.neopets.com/items/mall_clo_chocolatierdress.gif", leborn:"--", type:"Dress"},
+  {name:"Living in Watermelon Foreground and Background", qty:1, image:"https://images.neopets.com/items/mall_trink_watermfgbg.gif", leborn:"--", type:"Foreground"},
+  {name:"Cake Pop Bouquet", qty:1, image:"https://images.neopets.com/items/29g3y5h3zv.gif", leborn:"--", type:"Handheld"},
   {name:"Birthday Cupcake Handheld Plushie", qty:1, image:"https://images.neopets.com/items/mall_hh_cupcakeplush.gif", leborn:"1-2", type:"Handheld"},
   {name:"Dyeworks Green: Sugar Icing Holiday Cookies Garland", qty:1, image:"https://images.neopets.com/items/mall_sugarholidaycookies_green.gif", leborn:"1", type:"Garland"},
   {name:"Faerie Circle Background", qty:1, image:"https://images.neopets.com/items/mall_bg_faeriecircle.gif", leborn:"Permanent Buyable", type:"Background"},
@@ -383,35 +402,35 @@ const DATA = [
   {name:"Pack of Sleeping Varwolves Trinket", qty:1, image:"https://images.neopets.com/items/h62kv40nua1.gif", leborn:"2-4", type:"Trinket"},
   {name:"MME30-S5b: Nightmare Wisps Aura", qty:1, image:"https://images.neopets.com/items/745ljf6k86.gif", leborn:"1", type:"Foreground"},
   {name:"Premium Collectible: Sparkling Pastel Rainbow Background Item", qty:1, image:"https://images.neopets.com/items/i8g77kdf0i.gif", leborn:"1-2", type:"Background"},
-  {name:"Pride & Proud Gram", qty:1, image:"https://images.neopets.com/items/3c6a4d907e.gif", leborn:"—", type:"Trinket"},
-  {name:"Ocean Blue Gingham Shorts", qty:1, image:"https://images.neopets.com/items/fmk35f14ll.gif", leborn:"—", type:"Shorts"},
-  {name:"Ocean Seashell T-Shirt", qty:1, image:"https://images.neopets.com/items/27e6kabh5f.gif", leborn:"—", type:"Top"},
+  {name:"Pride & Proud Gram", qty:1, image:"https://images.neopets.com/items/3c6a4d907e.gif", leborn:"--", type:"Trinket"},
+  {name:"Ocean Blue Gingham Shorts", qty:1, image:"https://images.neopets.com/items/fmk35f14ll.gif", leborn:"--", type:"Shorts"},
+  {name:"Ocean Seashell T-Shirt", qty:1, image:"https://images.neopets.com/items/27e6kabh5f.gif", leborn:"--", type:"Top"},
   {name:"Arch of Roses", qty:1, image:"https://images.neopets.com/items/mall_trink_awningroses.gif", leborn:"1-2*", type:"Trinket"},
   {name:"Hollowed Wood Planter Foreground", qty:1, image:"https://images.neopets.com/items/mall_fg_logplanter.gif", leborn:"1-2", type:"Foreground"},
   {name:"Underwater Tea Party Background", qty:1, image:"https://images.neopets.com/items/mall_claw_water_teapartybg.gif", leborn:"1-2", type:"Background"},
   {name:"Dyeworks Black: Fancy Floral Tea Wig", qty:1, image:"https://images.neopets.com/items/mall_fancyfloral_black.gif", leborn:"1-2", type:"Wig"},
-  {name:"Splashing Drinking Fountain", qty:1, image:"https://images.neopets.com/items/mall_trink_drinkingfountain.gif", leborn:"—", type:"Trinket"},
+  {name:"Splashing Drinking Fountain", qty:1, image:"https://images.neopets.com/items/mall_trink_drinkingfountain.gif", leborn:"--", type:"Trinket"},
   {name:"Pink Hot Chocolate Cart", qty:1, image:"https://images.neopets.com/items/mall_trink_pinkcocoacart.gif", leborn:"1-2", type:"Trinket"},
-  {name:"Mad Tea Party Jacket", qty:1, image:"https://images.neopets.com/items/mall_hatter_jacket.gif", leborn:"—", type:"Jacket"},
+  {name:"Mad Tea Party Jacket", qty:1, image:"https://images.neopets.com/items/mall_hatter_jacket.gif", leborn:"--", type:"Jacket"},
   {name:"Lucky Latte", qty:1, image:"https://images.neopets.com/items/mall_hh_luckylatte.gif", leborn:"1-2", type:"Handheld"},
-  {name:"Autumn Goblet", qty:1, image:"https://images.neopets.com/items/mall_autumngoblet.gif", leborn:"—", type:"Handheld"},
+  {name:"Autumn Goblet", qty:1, image:"https://images.neopets.com/items/mall_autumngoblet.gif", leborn:"--", type:"Handheld"},
   {name:"Hot Pumpkin Spice To-Go Latte", qty:1, image:"https://images.neopets.com/items/mall_acc_hotpsl_togo.gif", leborn:"1-2", type:"Handheld"},
   {name:"Orange Juice Box Handheld", qty:1, image:"https://images.neopets.com/items/d9bcbi6hcg.gif", leborn:"2-3", type:"Handheld"},
-  {name:"Feathers and Golden Stars Garland", qty:1, image:"https://images.neopets.com/items/4896bnae35.gif", leborn:"—", type:"Garland"},
+  {name:"Feathers and Golden Stars Garland", qty:1, image:"https://images.neopets.com/items/4896bnae35.gif", leborn:"--", type:"Garland"},
   {name:"Pastel Power Staff", qty:1, image:"https://images.neopets.com/items/cbm19heha9.gif", leborn:"1-2", type:"Handheld"},
-  {name:"Taiyaki Koi Body Paint", qty:1, image:"https://images.neopets.com/items/t9r83lv4x2.gif", leborn:"—", type:"Body Paint"},
-  {name:"Void Balloon Arch Trinket", qty:1, image:"https://images.neopets.com/items/7n96gknkb0.gif", leborn:"—", type:"Trinket"},
+  {name:"Taiyaki Koi Body Paint", qty:1, image:"https://images.neopets.com/items/t9r83lv4x2.gif", leborn:"--", type:"Body Paint"},
+  {name:"Void Balloon Arch Trinket", qty:1, image:"https://images.neopets.com/items/7n96gknkb0.gif", leborn:"--", type:"Trinket"},
   {name:"Fireworks on a Lake Background", qty:1, image:"https://images.neopets.com/items/mall_bg_fwlake.gif", leborn:"1-2", type:"Background"},
-  {name:"Dyeworks Purple: Flower Wings", qty:1, image:"https://images.neopets.com/items/mall_flowerwingdye_purple.gif", leborn:"—", type:"Wings"},
-  {name:"Elegant Void Wings", qty:1, image:"https://images.neopets.com/items/f7m7dkjln0.gif", leborn:"—", type:"Wings"},
-  {name:"Gingerbread Cookie Wings", qty:1, image:"https://images.neopets.com/items/mall_acc_wings_gingerbread.gif", leborn:"—", type:"Wings"},
+  {name:"Dyeworks Purple: Flower Wings", qty:1, image:"https://images.neopets.com/items/mall_flowerwingdye_purple.gif", leborn:"--", type:"Wings"},
+  {name:"Elegant Void Wings", qty:1, image:"https://images.neopets.com/items/f7m7dkjln0.gif", leborn:"--", type:"Wings"},
+  {name:"Gingerbread Cookie Wings", qty:1, image:"https://images.neopets.com/items/mall_acc_wings_gingerbread.gif", leborn:"--", type:"Wings"},
   {name:"Strawberry Flower Laurel", qty:1, image:"https://images.neopets.com/items/fac25632ab.gif", leborn:"1-2", type:"Garland"},
   {name:"MME26-S1: Faerie Forest Background", qty:1, image:"https://images.neopets.com/items/mall_bg_faerieforestmme.gif", leborn:"1-2", type:"Background"},
   {name:"Dyeworks Peach & Cream: Pastel Christmas Cookie Party Background", qty:1, image:"https://images.neopets.com/items/mall_bg_cookieparty_peach_crea.gif", leborn:"1-2", type:"Background"},
   {name:"Ivory Tea Dress", qty:1, image:"https://images.neopets.com/items/mall_dress_ivorytea.gif", leborn:"2-3", type:"Dress"},
-  {name:"Haunted Woods Stick Handheld and Styx Companion", qty:1, image:"https://images.neopets.com/items/3b5fl7j4nf.gif", leborn:"—", type:"Handheld"},
-  {name:"Prismatic Tinsel: Christmas Kau", qty:1, image:"https://images.neopets.com/items/2cdo502e.gif", leborn:"—", type:"Trinket"},
-  {name:"Nostalgic Maraquan Acara", qty:1, image:"https://images.neopets.com/items/nostalgic_maraquan_acara.gif", leborn:"—", type:"Trinket"},
+  {name:"Haunted Woods Stick Handheld and Styx Companion", qty:1, image:"https://images.neopets.com/items/3b5fl7j4nf.gif", leborn:"--", type:"Handheld"},
+  {name:"Prismatic Tinsel: Christmas Kau", qty:1, image:"https://images.neopets.com/items/2cdo502e.gif", leborn:"--", type:"Trinket"},
+  {name:"Nostalgic Maraquan Acara", qty:1, image:"https://images.neopets.com/items/nostalgic_maraquan_acara.gif", leborn:"--", type:"Trinket"},
   {name:"Dyeworks Blue: Autumn Sunset Lake View Background", qty:1, image:"https://images.neopets.com/items/8gnhd1j9mh.gif", leborn:"Dyeworks thru October 20", type:"Background"},
   {name:"Dyeworks Mint: Glamourous Iridescent Side Part Wig", qty:1, image:"https://images.neopets.com/items/g1683i3m13.gif", leborn:"Dyeworks thru October 20", type:"Wig"},
   {name:"Dyeworks Blue: Dark and Moody Vignette Filter", qty:1, image:"https://images.neopets.com/items/3227d5m1g7.gif", leborn:"Dyeworks thru October 20", type:"Foreground"},
@@ -423,23 +442,23 @@ const DATA = [
   {name:"Gust of Wind Fall Filter", qty:1, image:"https://images.neopets.com/items/mall_acc_fallwind.gif", leborn:"Current Dyeable & Buyable thru October 20", type:"Foreground"},
   {name:"Dark Mystical Cape", qty:1, image:"https://images.neopets.com/items/mall_cape_darkmystical.gif", leborn:"Current Dyeable & Buyable thru October 20", type:"Cape"},
   {name:"Dark and Moody Vignette Filter", qty:1, image:"https://images.neopets.com/items/mall_fg_moodyvignette.gif", leborn:"Current Dyeable & Buyable thru October 20", type:"Foreground"},
-  {name:"Nostalgic Faerie Bruce", qty:1, image:"https://images.neopets.com/items/nostalgic_faerie_bruce.gif", leborn:"—", type:"Trinket"},
+  {name:"Nostalgic Faerie Bruce", qty:1, image:"https://images.neopets.com/items/nostalgic_faerie_bruce.gif", leborn:"--", type:"Trinket"},
   {name:"Floating Fyora Faerie Doll", qty:1, image:"https://images.neopets.com/items/mall_floatingfyoradoll.gif", leborn:"Permanent Buyable", type:"Trinket"},
-  {name:"Nostalgic Faerie Jubjub", qty:1, image:"https://images.neopets.com/items/nostalgic_faerie_jubjub.gif", leborn:"—", type:"Trinket"},
-  {name:"Nostalgic Royalboy Korbat", qty:1, image:"https://images.neopets.com/items/nostalgic_royalboy_korbat.gif", leborn:"—", type:"Trinket"},
-  {name:"Nostalgic Faerie Kacheek", qty:1, image:"https://images.neopets.com/items/nostalgic_faerie_kacheek.gif", leborn:"—", type:"Trinket"},
-  {name:"Nostalgic Baby Poogle", qty:1, image:"https://images.neopets.com/items/nostalgic_baby_poogle.gif", leborn:"—", type:"Trinket"},
-  {name:"Nostalgic Christmas Peophin", qty:1, image:"https://images.neopets.com/items/nostalgic_christmas_peophin.gif", leborn:"—", type:"Trinket"},
-  {name:"Nostalgic Christmas Kougra", qty:1, image:"https://images.neopets.com/items/nostalgic_christmas_kougra.gif", leborn:"—", type:"Trinket"},
+  {name:"Nostalgic Faerie Jubjub", qty:1, image:"https://images.neopets.com/items/nostalgic_faerie_jubjub.gif", leborn:"--", type:"Trinket"},
+  {name:"Nostalgic Royalboy Korbat", qty:1, image:"https://images.neopets.com/items/nostalgic_royalboy_korbat.gif", leborn:"--", type:"Trinket"},
+  {name:"Nostalgic Faerie Kacheek", qty:1, image:"https://images.neopets.com/items/nostalgic_faerie_kacheek.gif", leborn:"--", type:"Trinket"},
+  {name:"Nostalgic Baby Poogle", qty:1, image:"https://images.neopets.com/items/nostalgic_baby_poogle.gif", leborn:"--", type:"Trinket"},
+  {name:"Nostalgic Christmas Peophin", qty:1, image:"https://images.neopets.com/items/nostalgic_christmas_peophin.gif", leborn:"--", type:"Trinket"},
+  {name:"Nostalgic Christmas Kougra", qty:1, image:"https://images.neopets.com/items/nostalgic_christmas_kougra.gif", leborn:"--", type:"Trinket"},
   {name:"Altador Cup Pillars Foreground", qty:1, image:"https://images.neopets.com/items/mall_altador_trinket.gif", leborn:"Permanent Buyable", type:"Foreground"},
-  {name:"NC Upcycle Fortune Cookie", qty:1, image:"https://images.neopets.com/items/mall_fc_trading.gif", leborn:"—", type:"Consumable"},
-  {name:"Western Techo Outfit", qty:1, image:"https://images.neopets.com/items/0d9kim34ci.gif", leborn:"—", type:"Outfit"},
+  {name:"NC Upcycle Fortune Cookie", qty:1, image:"https://images.neopets.com/items/mall_fc_trading.gif", leborn:"--", type:"Consumable"},
+  {name:"Western Techo Outfit", qty:1, image:"https://images.neopets.com/items/0d9kim34ci.gif", leborn:"--", type:"Outfit"},
   {name:"Library of Ghost Stories Background", qty:1, image:"https://images.neopets.com/items/mall_bg_darkspookyroom.gif", leborn:"1", type:"Background"},
-  {name:"School Cafeteria Background", qty:1, image:"https://images.neopets.com/items/93j90a99bm.gif", leborn:"—", type:"Background"},
-  {name:"Prom Queen Wig and Sash", qty:1, image:"https://images.neopets.com/items/37k37ianfc.gif", leborn:"—", type:"Wig"},
-  {name:"Oversized School Shirt and Tie", qty:1, image:"https://images.neopets.com/items/elf53fk4m8.gif", leborn:"—", type:"Top"},
+  {name:"School Cafeteria Background", qty:1, image:"https://images.neopets.com/items/93j90a99bm.gif", leborn:"--", type:"Background"},
+  {name:"Prom Queen Wig and Sash", qty:1, image:"https://images.neopets.com/items/37k37ianfc.gif", leborn:"--", type:"Wig"},
+  {name:"Oversized School Shirt and Tie", qty:1, image:"https://images.neopets.com/items/elf53fk4m8.gif", leborn:"--", type:"Top"},
   {name:"Nighttime Bedroom Background Item", qty:1, image:"https://images.neopets.com/items/4fah5ldcf7.gif", leborn:"3", type:"Background"},
-  {name:"Nostalgic Ghost Jubjub", qty:1, image:"https://images.neopets.com/items/b275b14a.gif", leborn:"—", type:"Trinket"},
+  {name:"Nostalgic Ghost Jubjub", qty:1, image:"https://images.neopets.com/items/b275b14a.gif", leborn:"--", type:"Trinket"},
   {name:"Floating Light Faerie Doll", qty:1, image:"https://images.neopets.com/items/mall_floatinglightfaeriedoll.gif", leborn:"Permanent Buyable", type:"Trinket"},
   {name:"Enchanted Apple Branch Garland", qty:1, image:"https://images.neopets.com/items/mall_gar_fairytale.gif", leborn:"Permanent Buyable", type:"Garland"},
   {name:"Floating Bree Faerie Doll", qty:1, image:"https://images.neopets.com/items/mall_floatingbreedoll.gif", leborn:"Permanent Buyable", type:"Trinket"},
@@ -452,40 +471,47 @@ const DATA = [
   {name:"MiniMME20-S1: Galactic Princess Dress", qty:1, image:"https://images.neopets.com/items/mall_minimme20_spacedress.gif", leborn:"1", type:"Dress"},
   {name:"Cloud of Glitchy Orbs", qty:1, image:"https://images.neopets.com/items/8dl0jh568n.gif", leborn:"3-4", type:"Foreground"},
   {name:"MiniMME17-S1: Whimsical Governess Dress", qty:1, image:"https://images.neopets.com/items/mall_minimme17_dress.gif", leborn:"1-2", type:"Dress"},
-  {name:"MME3-S3: Flaming Magma Rock Shower", qty:1, image:"https://images.neopets.com/items/mall_mme3s3_grant_c9f0p.gif", leborn:"—", type:"Foreground"},
+  {name:"MME3-S3: Flaming Magma Rock Shower", qty:1, image:"https://images.neopets.com/items/mall_mme3s3_grant_c9f0p.gif", leborn:"--", type:"Foreground"},
   {name:"MME6-B: Bubbling Fountain Background", qty:1, image:"https://images.neopets.com/items/stage7_background_80x80.gif", leborn:"2-3", type:"Background"},
-  {name:"MiniMME6-B: Gold and Metal Gates Foreground", qty:1, image:"https://images.neopets.com/items/80x80_gate.gif", leborn:"—", type:"Foreground"},
+  {name:"MiniMME6-B: Gold and Metal Gates Foreground", qty:1, image:"https://images.neopets.com/items/80x80_gate.gif", leborn:"--", type:"Foreground"},
   {name:"MME7-S3: Swimming with Petpets Foreground", qty:1, image:"https://images.neopets.com/items/mme_maraqua3_80.gif", leborn:"1-2", type:"Foreground"},
-  {name:"MME23-S5a: Baking Display of Happiness", qty:1, image:"https://images.neopets.com/items/mall_mme23_bakingdisplay.gif", leborn:"—", type:"Foreground"},
+  {name:"MME23-S5a: Baking Display of Happiness", qty:1, image:"https://images.neopets.com/items/mall_mme23_bakingdisplay.gif", leborn:"--", type:"Foreground"},
   {name:"MME28-S4a: Iced Pumpkin Spice Latte and Apple Cider Doughnut", qty:1, image:"https://images.neopets.com/items/mall_acc_psl_appledonut.gif", leborn:"1", type:"Handheld"},
   {name:"Usuki Kitchen Background", qty:1, image:"https://images.neopets.com/items/63d5f6g0e8.gif", leborn:"1", type:"Background"},
-  {name:"Playground Background", qty:1, image:"https://images.neopets.com/items/cn5femd95j.gif", leborn:"—", type:"Background"},
-  {name:"Entering Space Background", qty:1, image:"https://images.neopets.com/items/ggmf2a2c87.gif", leborn:"—", type:"Background"},
+  {name:"Playground Background", qty:1, image:"https://images.neopets.com/items/cn5femd95j.gif", leborn:"--", type:"Background"},
+  {name:"Entering Space Background", qty:1, image:"https://images.neopets.com/items/ggmf2a2c87.gif", leborn:"--", type:"Background"},
   {name:"Scenic Winter Lights Background", qty:1, image:"https://images.neopets.com/items/bh7h7djbj6.gif", leborn:"1-2", type:"Background"},
-  {name:"Tranquil Ocean Sunrise Background", qty:1, image:"https://images.neopets.com/items/0m650f99jl.gif", leborn:"—", type:"Background"},
+  {name:"Tranquil Ocean Sunrise Background", qty:1, image:"https://images.neopets.com/items/0m650f99jl.gif", leborn:"--", type:"Background"},
   {name:"Dyeworks Pink: Magical Golden Markings", qty:1, image:"https://images.neopets.com/items/mall_acc_markingspink.gif", leborn:"Permanent Dyeworks", type:"Body Paint"},
   {name:"Pink Bedroom Background Item", qty:1, image:"https://images.neopets.com/items/bab2k4m582.gif", leborn:"1-2", type:"Background"},
-  {name:"Beach House Windows Background Item", qty:1, image:"https://images.neopets.com/items/2l6458nk1a.gif", leborn:"—", type:"Background"},
-  {name:"Space Station Windows Background Item", qty:1, image:"https://images.neopets.com/items/8l3kk7mj0b.gif", leborn:"—", type:"Background"},
+  {name:"Beach House Windows Background Item", qty:1, image:"https://images.neopets.com/items/2l6458nk1a.gif", leborn:"--", type:"Background"},
+  {name:"Space Station Windows Background Item", qty:1, image:"https://images.neopets.com/items/8l3kk7mj0b.gif", leborn:"--", type:"Background"},
   {name:"Delina Handheld Plushie", qty:1, image:"https://images.neopets.com/items/mall_hh_delinaplushie.gif", leborn:"Permanent Buyable", type:"Handheld"},
   {name:"Flower Bed Background", qty:1, image:"https://images.neopets.com/items/mall_bg_flowerbed.gif", leborn:"Permanent Buyable", type:"Background"},
   {name:"Rainbow Fountain Background", qty:1, image:"https://images.neopets.com/items/mall_bg_rainbowfountain.gif", leborn:"Permanent Buyable", type:"Background"},
   {name:"Mechanical Pocket Watch", qty:1, image:"https://images.neopets.com/items/mall_gar_pocketwatch.gif", leborn:"Permanent Buyable", type:"Trinket"},
   {name:"Mutants Hideout Background", qty:1, image:"https://images.neopets.com/items/mall_trink_mutanthideout.gif", leborn:"1-2", type:"Foreground"},
-  {name:"Mutant Petpets By The Trash Background Item", qty:1, image:"https://images.neopets.com/items/hm141ad075.gif", leborn:"—", type:"Background"},
-  {name:"Perched Mutant Altalaphus Wearable", qty:1, image:"https://images.neopets.com/items/g3837c2b1d.gif", leborn:"—", type:"Trinket"},
+  {name:"Mutant Petpets By The Trash Background Item", qty:1, image:"https://images.neopets.com/items/hm141ad075.gif", leborn:"--", type:"Background"},
+  {name:"Perched Mutant Altalaphus Wearable", qty:1, image:"https://images.neopets.com/items/g3837c2b1d.gif", leborn:"--", type:"Trinket"},
   {name:"Scary Story Night Foreground", qty:1, image:"https://images.neopets.com/items/mall_fg_scarynight.gif", leborn:"1-2", type:"Foreground"},
-  {name:"Mutant Negg Flower Wig", qty:1, image:"https://images.neopets.com/items/mall_acc_mutantwig.gif", leborn:"—", type:"Wig"},
+  {name:"Mutant Negg Flower Wig", qty:1, image:"https://images.neopets.com/items/mall_acc_mutantwig.gif", leborn:"--", type:"Wig"},
   {name:"Foggy Forest Background", qty:1, image:"https://images.neopets.com/items/mall_bg_foggy_forest.gif", leborn:"2", type:"Background"},
   {name:"Essential Pink Aura", qty:1, image:"https://images.neopets.com/items/h68a0065im.gif", leborn:"3", type:"Foreground"},
-  {name:"Essential Red Aura", qty:1, image:"https://images.neopets.com/items/g92n1blhla.gif", leborn:"—", type:"Foreground"},
-  {name:"Essential Black Aura", qty:1, image:"https://images.neopets.com/items/e1n0n0i1fd.gif", leborn:"—", type:"Foreground"},
+  {name:"Essential Red Aura", qty:1, image:"https://images.neopets.com/items/g92n1blhla.gif", leborn:"--", type:"Foreground"},
+  {name:"Essential Black Aura", qty:1, image:"https://images.neopets.com/items/e1n0n0i1fd.gif", leborn:"--", type:"Foreground"},
   {name:"Butterfly Shower", qty:1, image:"https://images.neopets.com/items/mall_butterflyshower.gif", leborn:"Permanent Buyable", type:"Foreground"},
   {name:"Rose Garden Background", qty:1, image:"https://images.neopets.com/items/mall_bg_rosegarden.gif", leborn:"Permanent Buyable", type:"Background"},
   {name:"Usuki Boutique Dress", qty:1, image:"https://images.neopets.com/items/63h6nlfdjj.gif", leborn:"1-2", type:"Dress"},
   {name:"Floating Taelia Doll", qty:1, image:"https://images.neopets.com/items/mall_floatingtaeliadoll.gif", leborn:"Permanent Buyable", type:"Trinket"},
   {name:"Moody Neovian Get Ready With Me Foreground", qty:1, image:"https://images.neopets.com/items/6a88b3c879.gif", leborn:"1-2", type:"Foreground"}
 ];
+
+// Items that should show the pink sale badge and highlight
+const SALE_ITEMS = new Set([
+  "Crystal Sabre",
+  "Boat Day Background",
+  "Carved Bronze Paisley Candle Garland"
+]);
 
 const PAGE_SIZE = 36;
 let page = 1;
@@ -502,7 +528,7 @@ const $q = document.getElementById("q");
 const $sort = document.getElementById("sort");
 
 function lebornRank(val){
-  if(!val || val==="—") return 9999;
+  if(!val || val==="--") return 9999;
   const map = {
     "1": 1, "1-2": 2, "2": 3, "2-3": 4, "2-4": 5,
     "3": 6, "3-4": 7, "3-5": 8, "4-5": 9,
@@ -521,8 +547,8 @@ function sortItems(items){
     arr.sort((a,b)=>b.name.localeCompare(a.name));
   }else if(sortMode==="leborn"){
     arr.sort((a,b)=>{
-      const ra = lebornRank(a.leborn||"—");
-      const rb = lebornRank(b.leborn||"—");
+      const ra = lebornRank(a.leborn||"--");
+      const rb = lebornRank(b.leborn||"--");
       if(ra!==rb) return ra - rb;
       return a.name.localeCompare(b.name);
     });
@@ -534,7 +560,7 @@ function applyFilter(){
   let out = DATA.slice();
   if(filter==="le1") out = out.filter(it=>it.leborn==="1");
   else if(filter==="le12") out = out.filter(it=>it.leborn==="1-2");
-  else if(filter==="none") out = out.filter(it=>!it.leborn || it.leborn==="—");
+  else if(filter==="none") out = out.filter(it=>!it.leborn || it.leborn==="--");
   if(query.trim()){
     const ql = query.trim().toLowerCase();
     out = out.filter(it =>
@@ -568,21 +594,23 @@ function render(){
 }
 
 function cardHTML(it){
-  const lbText = it.leborn ? it.leborn : "—";
+  const lbText = it.leborn ? it.leborn : "--";
   const safeImg = it.image || "";
-    // Mark Crystal Sabre for special styling and badge
-  const isSale = it.name === "Crystal Sabre";
+
+  const isSale = SALE_ITEMS.has(it.name);
   const cardClass = "card" + (isSale ? " highlight" : "");
-  
+
   return `
- <article class="${cardClass}" data-name="${escapeHTML(it.name)}" data-leborn="${escapeHTML(lbText)}">
+  <article class="${cardClass}" data-name="${escapeHTML(it.name)}" data-leborn="${escapeHTML(lbText)}">
     <div class="imgwrap">
-      ${isSale ? '<div class="badge">2:1 GBC sale item</div>' : ''}
       <img src="${safeImg}" alt="${escapeHTML(it.name)}" loading="lazy" />
       <div class="qty">×${it.qty||1}</div>
     </div>
     <div class="body">
-      <h3 class="name">${escapeHTML(it.name)}</h3>
+      <h3 class="name">
+        ${escapeHTML(it.name)}
+        ${isSale ? '<span class="badge">2:1 GBC sale item</span>' : ''}
+      </h3>
       <div class="meta">
         <span class="tag">${escapeHTML(it.type||"Wearable")}</span>
         <span class="tag">LeBorn: ${escapeHTML(lbText)}</span>
